@@ -11,33 +11,32 @@ LOG_FILE="aws_metadata.log"
 # Ensure log file is empty before running
 > "$LOG_FILE"
 
-request_and_log() {
-    local url=$1
+log_request() {
+    local -r request_url=$1
+    local -r response=$2
 
-    echo "[REQUEST] $url" >> "$LOG_FILE"
-
-    response=$(curl -s "$url")
-
+    echo "[REQUEST] $request_url" >> "$LOG_FILE"
     echo -e "[RESPONSE]\n$response" >> "$LOG_FILE"
     echo "----------------------------------------" >> "$LOG_FILE"
+    echo "$response"
+}
 
-    echo $response
+get_metadata() {
+    local -r url=${IMDS_BASE_URL}$1
+
+    log_request "$url" "$(curl -s "$url")"
 }
 
 extract_metadata() {
-    local metadata_path=${1:-"/"}
-    
-    request_url=${IMDS_BASE_URL}$metadata_path
+    local -r metadata_path=${1:-"/"}
 
-    response=$(request_and_log "$request_url")
-
-    for item in $response; do
+    for item in $(get_metadata "$metadata_path"); do
+        local next_path="$metadata_path$item"
+        
         if [[ "$item" == */ ]]; then
-            extract_metadata "$metadata_path$item"
+            extract_metadata "$next_path"
         else
-            local leaf_url=${IMDS_BASE_URL}$metadata_path$item
-
-            request_and_log "$leaf_url" > /dev/null
+            get_metadata "$next_path" > /dev/null
         fi
     done
 }
