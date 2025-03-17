@@ -14,11 +14,13 @@ LOG_FILE="aws_metadata.log"
 log_request() {
     local -r request_url=$1
     local -r response=$2
+    local -r is_valid_json=$(echo $response | jq empty > /dev/null 2>&1; echo $?)
+    local -r redacted_response=$([[ $is_valid_json -eq 0 ]] && jq 'walk(if type == "string" and length > 0 then "redacted" else . end)' <<< "$response" || echo "$response")
 
     echo "[REQUEST] $request_url" >> "$LOG_FILE"
-    echo -e "[RESPONSE]\n$response" >> "$LOG_FILE"
+    echo -e "[RESPONSE]\n$redacted_response" >> "$LOG_FILE"
     echo "----------------------------------------" >> "$LOG_FILE"
-    echo "$response"
+    echo "$redacted_response"
 }
 
 get_metadata() {
@@ -41,6 +43,14 @@ extract_metadata() {
     done
 }
 
+check_deps() {
+    if ! which jq >/dev/null 2>&1; then
+        echo "error: jq is required and not installed"
+        exit 1
+    fi
+}
+
+check_deps
 extract_metadata
 
 echo "Metadata requests and responses have been saved to $LOG_FILE"
