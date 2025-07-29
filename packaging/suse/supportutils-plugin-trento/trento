@@ -25,23 +25,23 @@ else
     rpm_verify() {
         LOGFILE=$LOG/$1
         INPUT_RPM=$2
-        echo "#==[ Verification ]=================================#" >>$LOGFILE
+        echo "#==[ Verification ]=================================#" >>"$LOGFILE"
         if rpm -q $INPUT_RPM &>/dev/null; then
             for RPM in $(rpm -q $INPUT_RPM); do
-                echo "# rpm -V $RPM" >>$LOGFILE
-                rpm -V $RPM >>$LOGFILE 2>&1
+                echo "# rpm -V $RPM" >>"$LOGFILE"
+                rpm -V $RPM >>"$LOGFILE" 2>&1
                 ERR=$?
                 if (($ERR)); then
-                    echo "# Verification Status: Differences Found" >>$LOGFILE
+                    echo "# Verification Status: Differences Found" >>"$LOGFILE"
                 else
-                    echo "# Verification Status: Passed" >>$LOGFILE
+                    echo "# Verification Status: Passed" >>"$LOGFILE"
                 fi
-                echo >>$LOGFILE
+                echo >>"$LOGFILE"
             done
             return 0
         else
-            echo "# RPM Not Installed: $INPUT_RPM" >>$LOGFILE
-            echo >>$LOGFILE
+            echo "# RPM Not Installed: $INPUT_RPM" >>"$LOGFILE"
+            echo >>"$LOGFILE"
             return 1
         fi
     }
@@ -61,16 +61,16 @@ else
         summary) ENTRY_HEADER="#==[ Summary ]======================================#" ;;
         *) ENTRY_HEADER="#==[ Entry ]========================================#" ;;
         esac
-        echo "$ENTRY_HEADER" >>$LOGFILE
-        echo "# $ENTRY_LABEL" >>$LOGFILE
-        echo >>$LOGFILE
+        echo "$ENTRY_HEADER" >>"$LOGFILE"
+        echo "# $ENTRY_LABEL" >>"$LOGFILE"
+        echo >>"$LOGFILE"
     }
 
     # Input: logfilename "text"
     log_write() {
         LOGFILE=$LOG/$1
         shift
-        echo "$@" >>$LOGFILE
+        echo "$@" >>"$LOGFILE"
     }
 
     _log_cmd() {
@@ -92,6 +92,11 @@ else
         fi
         echo
         return $EXIT_STATUS
+    }
+
+    log_cmd() {
+        LOGFILE=$LOG/$1
+        _log_cmd "$@" >>"$LOGFILE"
     }
 
     # Input: logfilename lines logfiles...
