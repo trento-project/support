@@ -37,49 +37,49 @@ collect_base_system() {
 
 	echo "#==[ Command ]======================================#"
 	echo "# $(which helm) get hooks $RELEASE_NAME -n $NAMESPACE"
-	helm get hooks $RELEASE_NAME -n $NAMESPACE
+	helm get hooks "$RELEASE_NAME" -n "$NAMESPACE"
 
 	echo "#==[ Command ]======================================#"
 	echo "# $(which helm) get manifest $RELEASE_NAME -n $NAMESPACE"
-	helm get manifest $RELEASE_NAME -n $NAMESPACE | yq -n '[inputs]' | jq 'walk(if type == "object" then del(.data."postgresql-password", .data."postgresql-postgres-password", .secretKeyRef, ."admin-user", ."admin-password", ."SMTP_PASSWORD", ."ADMIN_USER", ."ADMIN_PASSWORD", ."SECRET_KEY_BASE", ."ACCESS_TOKEN_ENC_SECRET", ."REFRESH_TOKEN_ENC_SECRET") else . end)'
+	helm get manifest "$RELEASE_NAME" -n "$NAMESPACE" | yq -n '[inputs]' | jq 'walk(if type == "object" then del(.data."postgresql-password", .data."postgresql-postgres-password", .secretKeyRef, ."admin-user", ."admin-password", ."SMTP_PASSWORD", ."ADMIN_USER", ."ADMIN_PASSWORD", ."SECRET_KEY_BASE", ."ACCESS_TOKEN_ENC_SECRET", ."REFRESH_TOKEN_ENC_SECRET") else . end)'
 
 	echo "#==[ Command ]======================================#"
 	echo "# $(which helm) get notes $RELEASE_NAME -n $NAMESPACE"
-	helm get notes $RELEASE_NAME -n $NAMESPACE
+	helm get notes "$RELEASE_NAME" -n "$NAMESPACE"
 
 	echo "#==[ Command ]======================================#"
 	echo "# $(which helm) get values $RELEASE_NAME -n $NAMESPACE"
-	helm get values $RELEASE_NAME -n $NAMESPACE | yq 'del(."trento-web".adminUser)'
+	helm get values "$RELEASE_NAME" -n "$NAMESPACE" | yq 'del(."trento-web".adminUser)'
 } &>"$OUTPUT"
 
 collect_kubernetes_state() {
 	echo "#==[ Command ]======================================#"
 	echo "# $(which kubectl) get nodes -o wide -n $NAMESPACE"
-	kubectl get nodes -o wide -n $NAMESPACE
+	kubectl get nodes -o wide -n "$NAMESPACE"
 
 	echo "#==[ Command ]======================================#"
 	echo "# $(which kubectl) get pods -n $NAMESPACE"
-	kubectl get pods -n $NAMESPACE
+	kubectl get pods -n "$NAMESPACE"
 
 	echo "#==[ Command ]======================================#"
 	echo "# $(which kubectl) logs deploy/$RELEASE_NAME-wanda -c init -n $NAMESPACE"
-	kubectl logs deploy/$RELEASE_NAME-wanda -c init -n $NAMESPACE
+	kubectl logs deploy/"$RELEASE_NAME"-wanda -c init -n "$NAMESPACE"
 
 	echo "#==[ Command ]======================================#"
 	echo "# $(which kubectl) logs deploy/$RELEASE_NAME-wanda -n $NAMESPACE"
-	kubectl logs deploy/$RELEASE_NAME-wanda -n $NAMESPACE
+	kubectl logs deploy/"$RELEASE_NAME"-wanda -n "$NAMESPACE"
 
 	echo "#==[ Command ]======================================#"
 	echo "# $(which kubectl) logs deploy/$RELEASE_NAME-web -c init -n $NAMESPACE"
-	kubectl logs deploy/$RELEASE_NAME-web -c init -n $NAMESPACE
+	kubectl logs deploy/"$RELEASE_NAME"-web -c init -n "$NAMESPACE"
 
 	echo "#==[ Command ]======================================#"
 	echo "# $(which kubectl) logs deploy/$RELEASE_NAME-web -n $NAMESPACE"
-	kubectl logs deploy/$RELEASE_NAME-web -n $NAMESPACE
+	kubectl logs deploy/"$RELEASE_NAME"-web -n "$NAMESPACE"
 
 	echo "#==[ Command ]======================================#"
 	echo "# $(which kubectl) describe deployments -n $NAMESPACE"
-	kubectl describe deployments -n $NAMESPACE
+	kubectl describe deployments -n "$NAMESPACE"
 
 	if [ "$COLLECT_CRICTL" != "false" ]; then
 		echo "#==[ Command ]======================================#"
@@ -195,7 +195,7 @@ cmdline() {
 
 		c)
 			COLLECT=$OPTARG
-			IFS=, read -a arr <<<"${COLLECT}"
+			IFS=, read -r -a arr <<<"${COLLECT}"
 			for key in "${!arr[@]}"; do
 				if [[ -z "${VALID_FACILITIES[${arr[$key]}]}" ]]; then
 					printf '%s: unsupported facility\n' "${arr[$key]}"
