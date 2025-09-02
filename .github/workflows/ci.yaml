@@ -32,6 +32,13 @@ jobs:
       - name: Check formatting
         run: shfmt -d ./trento-support.sh
 
+      - name: Setup shellcheck
+        uses: reviewdog/action-shellcheck@v1.31.0
+
+      - name: Check for shellcheck
+        run: |
+          shellcheck -s bash ./trento-support.sh
+
   test:
     runs-on: ubuntu-latest
     steps:
