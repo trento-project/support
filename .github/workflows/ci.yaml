@@ -25,19 +25,21 @@ jobs:
           chmod +x shfmt_${version}_linux_amd64
           sudo mv shfmt_${version}_linux_amd64 /usr/local/bin/shfmt
 
-      - name: Run shfmt
-        run: |
-          shfmt -d ./trento-support.sh
-
       - name: Check formatting
-        run: shfmt -d ./trento-support.sh
+        run: make fmt-check
 
-      - name: Setup shellcheck
-        uses: reviewdog/action-shellcheck@v1.31.0
-
-      - name: Check for shellcheck
+      - name: Install ShellCheck
         run: |
-          shellcheck -s bash ./trento-support.sh
+          set -e 
+          version="${{ env.SHELLCHECK_VERSION }}"
+          ARCH=$(uname -m)
+          OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+          wget -qO shellcheck.tar.xz https://github.com/koalaman/shellcheck/releases/download/v${version}/shellcheck-v${version}.${OS}.${ARCH}.tar.xz
+          tar -xf shellcheck.tar.xz
+          sudo mv shellcheck-v${version} /usr/local/share/shellcheck
+          sudo ln -sf /usr/local/share/shellcheck/shellcheck /usr/local/bin/shellcheck
+      - name: Check for lint issues
+        run: make lint
 
   test:
     runs-on: ubuntu-latest
