@@ -145,6 +145,9 @@ cmdline() {
         usage
         exit 1
     fi
+
+    check_deps
+
     local arg=
 
     for arg; do
@@ -245,6 +248,6 @@ check_deps() {
     fi
 }
 
-check_deps
 cmdline "${ARGS[@]}"
 generate_output
+

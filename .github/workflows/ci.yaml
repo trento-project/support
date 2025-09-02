@@ -8,8 +8,21 @@ on:
   workflow_dispatch:
 
 jobs:
-  placeholder:
+  test:
     runs-on: ubuntu-latest
     steps:
-      - name: Placeholder step
-        run: echo "This is a placeholder job."
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Read .tool-versions
+        id: tool-versions
+        uses: endorama/asdf-parse-tool-versions@v1.3.4
+
+      - name: Setup BATS
+        uses: mig4/setup-bats@v1
+        with:
+          bats-version: ${{ env.BATS_VERSION }}
+
+      - name: Run tests
+        run: |
+          bats -r ./test
