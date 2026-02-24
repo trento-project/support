@@ -9,6 +9,8 @@
 SVER='1.0.0'
 TITLE="Trento"
 VAR_OPTION_LINE_COUNT=500
+HOSTNAME=$(hostnamectl --transient)
+TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 
 ### Check if executed by supportconfig ###
 PP_COMM="$(cat /proc/$(grep -i ppid /proc/$$/status | awk '{print $2}')/comm)"
@@ -20,7 +22,7 @@ if [[ $PP_COMM == "supportconfig" ]]; then
         exit 1
     }
 else
-    OF=trento-support-$(hostname)-$(date +%Y%m%d-%H%M%S).txt
+    OF=trento-support-$HOSTNAME-$TIMESTAMP.txt
 
     rpm_verify() {
         LOGFILE=$LOG/$1
@@ -138,7 +140,6 @@ fi
 # Detect and use usernames/database names/vhost name from config
 #check firewall
 #run standalone if not executed by supportconfig
-# dump-scenario
 # Use GNUGPL2 license to match supportutils, instead of Apache-2.0?
 
 #TODO sanitize these values
@@ -254,6 +255,13 @@ if rpm -q --quiet trento-web; then
     for UNIT in trento-web trento-wanda postgresql-server rabbitmq-server prometheus; do
         log_cmd $OF "journalctl -u ${UNIT} | tail -${VAR_OPTION_LINE_COUNT}"
     done
+    
+    echo "#==[ Collect Scenario Dump ]=========================================#"
+    set -a
+    source /etc/trento/trento-web
+    set +a
+    LANG=en_US.UTF-8
+    /usr/lib/trento/bin/trento eval 'Trento.Release.dump_scenario(["'trento-scenariodump-$HOSTNAME-$TIMESTAMP'", "-p", "'$LOG'", "-d", "200"])'
 fi
 
 ### Trento Agent ###
