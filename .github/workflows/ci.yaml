@@ -4,8 +4,16 @@ on:
   push:
     branches:
       - "main"
+    paths-ignore:
+      - "VERSION"
+      - "CHANGELOG.md"
   pull_request:
-  workflow_dispatch:
+    paths-ignore:
+      - "VERSION"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   static-analysis:
@@ -30,7 +38,7 @@ jobs:
 
       - name: Install ShellCheck
         run: |
-          set -e 
+          set -e
           version="${{ env.SHELLCHECK_VERSION }}"
           ARCH=$(uname -m)
           OS=$(uname -s | tr '[:upper:]' '[:lower:]')
@@ -38,6 +46,7 @@ jobs:
           tar -xf shellcheck.tar.xz
           sudo mv shellcheck-v${version} /usr/local/share/shellcheck
           sudo ln -sf /usr/local/share/shellcheck/shellcheck /usr/local/bin/shellcheck
+
       - name: Check for lint issues
         run: make lint
 
@@ -59,3 +68,19 @@ jobs:
       - name: Run tests
         run: |
           bats -r ./test
+
+  obs-sync:
+    name: OBS sync
+    if: fromJSON(vars.OBS_ENABLED) && github.event_name == 'push'
+    uses: trento-project/.github/.github/workflows/obs-sync.yaml@406be0972195864a87ed454458eaa0856d0c5457 # v1.6.0
+    needs:
+      - static-analysis
+      - test
+    with:
+      obs_project: ${{ vars.OBS_PROJECT_ROLLING }}
+      obs_package: ${{ vars.OBS_PACKAGE }}
+    secrets:
+      gh_token: ${{ secrets.TRENTOBOT_GH_PAT }}
+      obs_user: ${{ secrets.OBS_USER }}
+      obs_pass: ${{ secrets.OBS_PASS }}
+      obs_ssh_key: ${{ secrets.OBS_SSH_KEY }}
