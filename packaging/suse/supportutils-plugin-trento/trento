@@ -3,7 +3,8 @@
 # Name:        Supportconfig Plugin for SUSE Trento
 # Description: Gathers important troubleshooting information
 #              about a SUSE Trento SAP console
-# License:     GPLv2
+# License:     SPDX-FileCopyrightText: SUSE LLC
+#              SPDX-License-Identifier: Apache-2.0
 #############################################################
 
 SVER='1.0.0'
@@ -228,22 +229,22 @@ if rpm -q --quiet trento-web; then
     echo "#==[ trento database permissions ]==================#"
     #TODO detect trento-web database name/user from trento-web's DATABASE_URL
     su - postgres -c "psql -d trento -c \"
-            SELECT grantor, grantee, table_schema, table_name, privilege_type 
-            FROM information_schema.table_privileges 
+            SELECT grantor, grantee, table_schema, table_name, privilege_type
+            FROM information_schema.table_privileges
             WHERE grantee = 'trento_user'\""
 
     echo "#==[ trento_event_store database permissions ]======#"
     #TODO detect trento-web database name/user from trento-web's EVENTSTORE_URL
     su - postgres -c "psql -d trento_event_store -c \"
-            SELECT grantor, grantee, table_schema, table_name, privilege_type 
-            FROM information_schema.table_privileges 
+            SELECT grantor, grantee, table_schema, table_name, privilege_type
+            FROM information_schema.table_privileges
             WHERE grantee = 'trento_user'\""
 
     echo "#==[ wanda database permissions ]===================#"
     #TODO detect trento-wanda database name/user from trento-wanda's DATABASE_URL
     su - postgres -c "psql -d wanda -c \"
-            SELECT grantor, grantee, table_schema, table_name, privilege_type 
-            FROM information_schema.table_privileges 
+            SELECT grantor, grantee, table_schema, table_name, privilege_type
+            FROM information_schema.table_privileges
             WHERE grantee = 'wanda_user'\""
 
     echo "#==[ Database sizes ]===============================#"
@@ -285,7 +286,7 @@ if rpm -q --quiet trento-web; then
     for UNIT in trento-web trento-wanda postgresql-server rabbitmq-server prometheus; do
         log_cmd $OF "journalctl -u ${UNIT} | tail -${VAR_OPTION_LINE_COUNT}"
     done
-    
+
     echo "#==[ Collect Scenario Dump ]=========================================#"
     set -a
     source /etc/trento/trento-web

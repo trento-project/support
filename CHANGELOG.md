@@ -1,3 +1,8 @@
+<!--
+  ~ SPDX-FileCopyrightText: SUSE LLC
+  ~ SPDX-License-Identifier: Apache-2.0
+-->
+
 # Changelog
 
 ## 3.0.0 - 2025-11-27
