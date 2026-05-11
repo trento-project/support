@@ -16,3 +16,4 @@ header:
     - ".tool-versions"
     - "LICENSE"
     - "VERSION"
+    - "packaging/suse/supportutils-plugin-trento/trento"
