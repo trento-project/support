@@ -17,3 +17,4 @@ header:
     - "LICENSE"
     - "VERSION"
     - "packaging/suse/supportutils-plugin-trento/trento"
+    - "packaging/suse/supportutils-plugin-trento/supportutils-plugin-trento.spec"
