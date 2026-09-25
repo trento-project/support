@@ -27,7 +27,7 @@ jobs:
 
       - name: Read .tool-versions
         id: tool-versions
-        uses: endorama/asdf-parse-tool-versions@e60863920ff5af9bf1c794ffbaaef91384b07eed # v1.6.0
+        uses: endorama/asdf-parse-tool-versions@115a5df5884438dfd08a3a21e9c9efdf06dd907e # v1.7.0
 
       - name: Install shfmt
         run: |
@@ -64,7 +64,7 @@ jobs:
 
       - name: Read .tool-versions
         id: tool-versions
-        uses: endorama/asdf-parse-tool-versions@e60863920ff5af9bf1c794ffbaaef91384b07eed # v1.6.0
+        uses: endorama/asdf-parse-tool-versions@115a5df5884438dfd08a3a21e9c9efdf06dd907e # v1.7.0
 
       - name: Setup BATS
         uses: mig4/setup-bats@af9a00deb21b5d795cabfeaa8d9060410377686d # v1
