@@ -20,7 +20,7 @@ Name:           supportutils-plugin-trento
 # Version will be processed via set_version source service
 Version:        0
 Release:        0
-License:        Apache-2.0
+License:        GPL-3.0-or-later
 Summary:        Supportconfig plugin for the Trento application
 Group:          System/Monitoring
 URL:            https://github.com/trento-project/support

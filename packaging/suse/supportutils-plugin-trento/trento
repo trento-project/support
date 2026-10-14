@@ -4,7 +4,7 @@
 # Description: Gathers important troubleshooting information
 #              about a SUSE Trento SAP console
 # License:     SPDX-FileCopyrightText: SUSE LLC
-#              SPDX-License-Identifier: Apache-2.0
+#              SPDX-License-Identifier: GPL-3.0-or-later
 #############################################################
 
 SVER='1.0.0'
@@ -141,7 +141,6 @@ fi
 # Detect and use usernames/database names/vhost name from config
 #check firewall
 #run standalone if not executed by supportconfig
-# Use GNUGPL2 license to match supportutils, instead of Apache-2.0?
 
 #TODO sanitize these values
 # password from AMQP_URL
