@@ -1,8 +1,36 @@
 <!--
   ~ SPDX-FileCopyrightText: SUSE LLC
-  ~ SPDX-License-Identifier: Apache-2.0
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
 -->
 # Changelog
+
+## 3.2.0 - 2026-10-20
+
+### What's Changed
+
+* Relicense under GPL-3.0-or-later (#40) @nelsonkopliku
+* Update license in spec file (#28) @skrech
+
+#### Maintenance
+
+* Use automerge reusable workflow (#36) @antgamdia
+* Enable backport action (#33) @skrech
+
+#### Dependencies
+
+<details>
+<summary>8 changes</summary>
+* Bump the common-workflows group with 4 updates (#39) [@dependabot[bot]](https://github.com/apps/dependabot)
+* Bump endorama/asdf-parse-tool-versions from 1.6.0 to 1.7.0 (#38) [@dependabot[bot]](https://github.com/apps/dependabot)
+* Bump the common-workflows group with 3 updates (#37) [@dependabot[bot]](https://github.com/apps/dependabot)
+* Bump apache/skywalking-eyes/header from 0.8.0 to 0.9.0 (#35) [@dependabot[bot]](https://github.com/apps/dependabot)
+* Bump the common-workflows group with 2 updates (#34) [@dependabot[bot]](https://github.com/apps/dependabot)
+* Bump actions/checkout from 5.0.1 to 7.0.1 (#32) [@dependabot[bot]](https://github.com/apps/dependabot)
+* Bump endorama/asdf-parse-tool-versions from 1.3.4 to 1.6.0 (#30) [@dependabot[bot]](https://github.com/apps/dependabot)
+* Bump the common-workflows group across 1 directory with 2 updates (#26) [@dependabot[bot]](https://github.com/apps/dependabot)
+
+</details>
+**Full Changelog**: https://github.com/trento-project/support/compare/3.1.0...3.2.0
 
 ## 3.1.0 - 2026-05-19
 

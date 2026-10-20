@@ -1,5 +1,5 @@
 # SPDX-FileCopyrightText: SUSE LLC
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 name: Continuous Integration
 
@@ -23,11 +23,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
 
       - name: Read .tool-versions
         id: tool-versions
-        uses: endorama/asdf-parse-tool-versions@afbfa92e56234f29b1e82314f50c3d1244285f60 # v1.3.4
+        uses: endorama/asdf-parse-tool-versions@115a5df5884438dfd08a3a21e9c9efdf06dd907e # v1.7.0
 
       - name: Install shfmt
         run: |
@@ -54,17 +54,17 @@ jobs:
         run: make lint
 
       - name: Check license headers
-        uses: apache/skywalking-eyes/header@61275cc80d0798a405cb070f7d3a8aaf7cf2c2c1 # v0.8.0
+        uses: apache/skywalking-eyes/header@a196742f472feaffafea537ce5a2a4c3c53a8de4 # v0.9.0
 
   test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v5
 
       - name: Read .tool-versions
         id: tool-versions
-        uses: endorama/asdf-parse-tool-versions@afbfa92e56234f29b1e82314f50c3d1244285f60 # v1.3.4
+        uses: endorama/asdf-parse-tool-versions@115a5df5884438dfd08a3a21e9c9efdf06dd907e # v1.7.0
 
       - name: Setup BATS
         uses: mig4/setup-bats@af9a00deb21b5d795cabfeaa8d9060410377686d # v1
@@ -78,7 +78,7 @@ jobs:
   obs-sync:
     name: OBS sync
     if: fromJSON(vars.OBS_ENABLED) && github.event_name == 'push'
-    uses: trento-project/.github/.github/workflows/obs-sync.yaml@406be0972195864a87ed454458eaa0856d0c5457 # v1.6.0
+    uses: trento-project/.github/.github/workflows/obs-sync.yaml@94dac57211d792dda649383e7f23326b24a9087b # v1.11.0
     needs:
       - static-analysis
       - test
@@ -90,3 +90,20 @@ jobs:
       obs_user: ${{ secrets.OBS_USER }}
       obs_pass: ${{ secrets.OBS_PASS }}
       obs_ssh_key: ${{ secrets.OBS_SSH_KEY }}
+
+  dependabot-auto-merge:
+    name: Approve and merge Dependabot PRs
+    if: >
+      always() &&
+      !contains(needs.*.result, 'failure') &&
+      !contains(needs.*.result, 'cancelled') &&
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.user.login == 'dependabot[bot]'
+    needs:
+      - static-analysis
+      - test
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    uses: trento-project/.github/.github/workflows/dependabot-auto-merge.yaml@94dac57211d792dda649383e7f23326b24a9087b # v1.11.0
